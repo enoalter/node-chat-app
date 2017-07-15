@@ -13,13 +13,23 @@ io.on("connection", (socket) => {
   console.log("new user connected");
 
   socket.emit("newMessage", {
-    from: "mike@example.com 2",
-    text: "hey, what is going on 2",
-    createdAt: 444123
+    from: "admin",
+    text: "welcome to the chat app",
+    createdAt: new Date().getTime()
+  });
+  socket.broadcast.emit("newMessage", {
+    from: "admin",
+    text: "new user joined",
+    createdAt: new Date().getTime()
   });
 
-  socket.on("createMessage", (newMessage) => {
-    console.log("createMessage", newMessage);
+  socket.on("createMessage", (message) => {
+    console.log("createMessage", message);
+    io.emit("newMessage", {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    });
   });
 
   socket.on("disconnect", (socket) => {
